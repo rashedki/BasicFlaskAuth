@@ -109,16 +109,17 @@ def requires_auth(f):
     @wraps(f)
     def wrapper(*args, **kwargs):
         token = get_token_auth_header()
-        # print(token)
-        payload = verify_decode_jwt(token)
+        try:
+            payload = verify_decode_jwt(token)
+        except:
+            abort(401)
         return f(payload, *args, **kwargs)
-
     return wrapper
 
 @app.route('/headers')
 @requires_auth
-def headers(token):
-    print(token)
+def headers(payload):
+    print(payload)
     return 'Access Granted'
 
 
