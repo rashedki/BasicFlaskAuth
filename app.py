@@ -4,7 +4,6 @@ from functools import wraps
 from jose import jwt
 from urllib.request import urlopen
 
-
 app = Flask(__name__)
 
 AUTH0_DOMAIN = 'rashedki.us.auth0.com'
@@ -53,6 +52,7 @@ def get_token_auth_header():
 
 def verify_decode_jwt(token):
     jsonurl = urlopen(f'https://{AUTH0_DOMAIN}/.well-known/jwks.json')
+    # print(jsonurl, 'lskdf test')
     jwks = json.loads(jsonurl.read())
     unverified_header = jwt.get_unverified_header(token)
     rsa_key = {}
@@ -109,16 +109,20 @@ def requires_auth(f):
     @wraps(f)
     def wrapper(*args, **kwargs):
         token = get_token_auth_header()
-        try:
-            payload = verify_decode_jwt(token)
-        except:
-            abort(401)
+        # print(token)
+        payload = verify_decode_jwt(token)
         return f(payload, *args, **kwargs)
 
     return wrapper
 
 @app.route('/headers')
 @requires_auth
-def headers(payload):
-    print(payload)
+def headers(token):
+    print(token)
     return 'Access Granted'
+
+
+@app.route('/images')
+def images():
+    print('hello world')
+    return 'not implemented'
