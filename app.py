@@ -124,6 +124,7 @@ def headers(payload):
 
 
 @app.route('/images')
-def images():
+@requires_auth
+def images(payload):
     print('hello world')
     return 'not implemented'
